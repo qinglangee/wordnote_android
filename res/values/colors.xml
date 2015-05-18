@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 测试用的颜色 -->
+    <color name="red">#FF0000</color>
+    <color name="green">#00FF00</color>
+    <color name="blue">#0000FF</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    
+    <!-- 应用主要颜色 -->
+    <color name="app_main">#AD1B20</color>
+    <color name="app_main_sel">@color/black</color>
+    
+    <!-- 背景颜色 -->
+    <!-- 
+    	bg_header           头部背景
+    	bg_btn_main         按钮背景
+    -->
+    <color name="bg_header">@color/app_main</color>
+    <color name="bg_btn_main">@color/app_main</color>
+    
+    
+    <!-- 文字颜色 -->
+    <!-- 
+    	text_header            头部标题
+    	text_btn_main          按钮文字
+    	text_main              白底的主要文字颜色
+    	text_sub               白底的次要文字
+    	text_main_deep         深色背景主要文字颜色
+    	text_sub_deep          深色背景次要文字
+    	text_timeline          时间轴文字
+    	text_timeline_sub      时间轴文字二级颜色
+    	text_commission        品委会文字
+    	text_commission_sub    品委会文字二级颜色
+    	text_menu              菜单页文字
+    -->
+    <color name="text_header">@color/white</color>
+    <color name="text_btn_main">@color/white</color>
+    <color name="text_main">@color/black</color>
+    <color name="text_sub">#999999</color>
+    <color name="text_main_deep">@color/white</color>
+    <color name="text_sub_deep">#929292</color>
+    <color name="text_timeline">@color/text_main_deep</color>
+    <color name="text_timeline_sub">@color/text_sub_deep</color>
+    <color name="text_commission">@color/text_main</color>
+    <color name="text_commission_sub">@color/text_sub</color>
+    <color name="text_menu">@color/white</color>
+    <color name="text_menu_sub">@color/border_main_in_deep</color>
+    
+    
+    
+    <!-- 边框颜色 -->
+    <!-- 
+    	border_avatar              头像边框颜色
+    	border_separator_in_deep   深色底分隔线
+    	border_separator_in_light  浅色底分隔线
+    	border_main_in_deep        深色底主要边框颜色
+    	border_main_in_light       浅色底主要边框颜色
+     -->
+    <color name="border_avatar">@color/app_main</color>
+    <color name="border_separator_in_deep">#333333</color>
+    <color name="border_separator_in_light">#F2F2F2</color>
+    <color name="border_main_in_deep">#999999</color>
+    <color name="border_main_in_light">@color/border_separator_in_light</color>
+    
+    
+    
+</resources>

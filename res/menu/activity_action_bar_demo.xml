@@ -1,0 +1,22 @@
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/action_search"
+          android:icon="@drawable/ic_launcher"
+          android:title="@string/act_action_bar_menu1"
+          android:showAsAction="ifRoom"/>
+    <!-- android:showAsAction="ifRoom|withText"  没有图片时的提示文字, 用title显示  -->
+    <item android:id="@+id/action_compose"
+          android:icon="@drawable/ic_launcher"
+          android:title="@string/act_action_bar_menu2" />
+</menu>
+<!-- 如果是support lib中的action bar, 需要使用自定义的命名空间 -->
+<!-- 
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:yourapp="http://schemas.android.com/apk/res-auto" >
+    <item android:id="@+id/action_search"
+          android:icon="@drawable/ic_action_search"
+          android:title="@string/action_search"
+          yourapp:showAsAction="ifRoom"  />
+    ...
+</menu>
+ -->

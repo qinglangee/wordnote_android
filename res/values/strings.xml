@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WordNote</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
+    <string name="action_settings">Settings</string>
+    <string name="nothing_holder">nothing_holder</string>
+    <string name="title_activity_action_bar_demo">ActionBarDemo</string>
+    <string name="hello_world">Hello world!</string>
+    
+    
+    <string name="act_action_bar_menu1">菜单01</string>
+    <string name="act_action_bar_menu2">菜单02</string>
+    <string name="act_action_bar_title">Act示例</string>
+
+
+    <string name="common_err_connection_broken">遇到网络问题, 请稍后再试</string>
+    <string name="common_err_connection_401">用户验证出错, 请重新登录</string>
+    <string name="common_err_connection_500">服务器抽风,治疗中...</string>
+</resources>
