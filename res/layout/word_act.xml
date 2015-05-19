@@ -6,25 +6,38 @@
     android:background="@android:color/white"
     android:orientation="vertical">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/info"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_above="@+id/btn_box">
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="match_parent" />
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_weight="4"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/word01"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/info"
+        android:background="@drawable/border_in_deep"/>
+    <TextView
+        android:id="@+id/word02"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/word01"
+        android:background="@drawable/border_in_deep"/>
+    <TextView
+        android:id="@+id/word03"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/word02"
+        android:background="@drawable/border_in_deep"/>
+    <TextView
+        android:id="@+id/translate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/info"
+        android:layout_toRightOf="@id/word01"
+        android:text=""/>
 
     <LinearLayout
-        android:id="@id/btn_box"
+        android:id="@+id/btn_box"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_alignParentBottom="true">

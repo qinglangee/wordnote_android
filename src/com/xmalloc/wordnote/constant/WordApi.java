@@ -12,7 +12,9 @@ public class WordApi extends Api{
 	}
 	
 	/** 背单词记录 */
-	public static Api PLAN_LIST = new WordApi("temp/view/", GET, false);
+	public static Api PLAN_LIST = new WordApi("temp/view", GET, false);
 	/** 背单词记录 */
-	public static Api PLAN_LIST_22 = new WordApi("temp/view/", POST, false);
+	public static Api WORD_LIST = new WordApi("temp/review_words", GET, false);
+	/** 背单词记录 */
+	public static Api PLAN_LIST_22 = new WordApi("temp/view", POST, false);
 }
