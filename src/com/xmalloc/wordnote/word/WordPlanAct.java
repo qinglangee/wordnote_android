@@ -1,26 +1,5 @@
 package com.xmalloc.wordnote.word;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.text.Editable;
-import android.view.View;
-import android.widget.EditText;
-
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.toolbox.StringRequest;
-import com.google.common.base.Strings;
-import com.xmalloc.wordnote.R;
-import com.xmalloc.wordnote.common.activity.BaseAct;
-import com.xmalloc.wordnote.constant.PintimesApi;
-import com.xmalloc.wordnote.constant.TempResp;
-import com.xmalloc.wordnote.constant.WordApi;
-import com.xmalloc.wordnote.util.LL;
-import com.xmalloc.wordnote.util.TimeUtil;
-import com.xmalloc.wordnote.util.net.GsonRequest;
-import com.xmalloc.wordnote.util.net.NetUtil;
-import com.xmalloc.wordnote.util.net.VolleyWrapper;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,6 +8,22 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Response;
+import com.google.common.base.Strings;
+import com.xmalloc.wordnote.R;
+import com.xmalloc.wordnote.common.activity.BaseAct;
+import com.xmalloc.wordnote.constant.WordApi;
+import com.xmalloc.wordnote.util.TimeUtil;
+import com.xmalloc.wordnote.util.net.GsonRequest;
+import com.xmalloc.wordnote.util.net.NetUtil;
+import com.xmalloc.wordnote.util.net.VolleyWrapper;
 
 /**
  * Created by zhch on 2015/5/18.
@@ -67,9 +62,17 @@ public class WordPlanAct extends BaseAct {
         GsonRequest<ActResp> listRequest = new GsonRequest<ActResp>(WordApi.PLAN_LIST,
                 ActResp.class, null, getListResponseListener(),
                 NetUtil.getErrorListener(this));
+        
+        listRequest.setRetryPolicy(new DefaultRetryPolicy(
+                20000, 
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, 
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));    
+        
         VolleyWrapper.getInstance(this).addToRequestQueue(listRequest);
-        content= TempResp.actList;
-        setListResp(content);
+        
+        
+//        content= TempResp.actList;
+//        setListResp(content);
     }
 
 
