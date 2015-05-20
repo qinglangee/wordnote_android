@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -46,6 +47,23 @@ public class WordPlanAct extends BaseAct {
         logic = new WordLogic(this);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        String dateString = PreferencesUtils.getString(WordPlanAct.this, logic.DATE_STRING);
+        String reviewDays = PreferencesUtils.getString(this, WordLogic.REVIEW_DAYS);
+        String scheduleString = PreferencesUtils.getString(WordPlanAct.this, logic.SCHEDULE_STRING);
+        if(!TextUtils.isEmpty(dateString)){
+            mAct.setText(dateString);
+        }
+        if(!TextUtils.isEmpty(reviewDays)){
+            mTodayDays.setText(reviewDays);
+        }
+        if(!TextUtils.isEmpty(scheduleString)){
+            mPlan.setText(scheduleString);
+        }
+    }
+
     public void clickBtn(View v) {
         switch (v.getId()) {
             case R.id.refresh:
@@ -76,6 +94,7 @@ public class WordPlanAct extends BaseAct {
             public void onResponse(ActResp res) {
                 content = res.content;
                 mAct.setText(content);
+                PreferencesUtils.putString(WordPlanAct.this, logic.DATE_STRING, content);
                 calculate();
             }
         };
@@ -95,7 +114,9 @@ public class WordPlanAct extends BaseAct {
             }
         }
         boolean showAll = mShowAll.isChecked();
-        mPlan.setText(WordLogic.printSchedule(result, showAll));
+        String scheduleString = WordLogic.printSchedule(result, showAll);
+        mPlan.setText(scheduleString);
+        PreferencesUtils.putString(WordPlanAct.this, logic.SCHEDULE_STRING, scheduleString);
     }
 
     private void setupWords() {

@@ -15,6 +15,8 @@ public class WordApi extends Api{
 	public static Api PLAN_LIST = new WordApi("temp/view", GET, false);
 	/** 背单词记录 */
 	public static Api WORD_LIST = new WordApi("temp/review_words", GET, false);
-	/** 背单词记录 */
-	public static Api PLAN_LIST_22 = new WordApi("temp/view", POST, false);
+	/** 保存忘记的 */
+	public static Api SAVE_FORGET = new WordApi("temp/save_forget", POST, false);
+	/** 请求忘记的 */
+	public static Api VIEW_FORGET = new WordApi("temp/view_forget", GET, false);
 }

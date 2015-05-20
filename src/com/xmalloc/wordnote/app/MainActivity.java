@@ -18,6 +18,7 @@ public class MainActivity extends BaseAct {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         startActivity(new Intent(this, WordPlanAct.class));
+        finish();
 	}
 
 
