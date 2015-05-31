@@ -1,6 +1,7 @@
 package com.xmalloc.wordnote.word;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -24,6 +25,7 @@ import com.xmalloc.wordnote.word.vo.Word;
 import com.xmalloc.wordnote.word.vo.WordListResp;
 
 import java.lang.reflect.Type;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -65,6 +67,13 @@ public class WordAct extends BaseAct {
             logic.setupWords();
         } else {
             logic.setReviewWordList(reviewWordsJson);
+            logic.setRandomWordList(PreferencesUtils.getString(this, WordLogic.RANDOM_WORDS));
+            String forgetWordsJson = PreferencesUtils.getString(this, WordLogic.FORGET_WORDS);
+            if(!TextUtils.isEmpty(forgetWordsJson)){
+                logic.setForgetWordList(forgetWordsJson);
+            }else{
+                logic.forgetSet = new HashSet<>();
+            }
         }
         mInfo.setText(logic.reviewPreInfo());
     }

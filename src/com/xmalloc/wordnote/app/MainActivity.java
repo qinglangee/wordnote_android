@@ -17,9 +17,12 @@ public class MainActivity extends BaseAct {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        startActivity(new Intent(this, WordPlanAct.class));
-        finish();
 	}
 
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        startActivity(new Intent(this, WordPlanAct.class));
+        finish();
+    }
 }

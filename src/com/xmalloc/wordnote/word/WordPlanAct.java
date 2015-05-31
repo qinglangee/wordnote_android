@@ -1,6 +1,6 @@
 package com.xmalloc.wordnote.word;
 
-import java.util.Date;
+import java.util.Arrays;
 import java.util.List;
 
 import android.content.Intent;
@@ -15,13 +15,11 @@ import com.xmalloc.wordnote.R;
 import com.xmalloc.wordnote.common.activity.BaseAct;
 import com.xmalloc.wordnote.constant.WordApi;
 import com.xmalloc.wordnote.util.PreferencesUtils;
-import com.xmalloc.wordnote.util.TimeUtil;
 import com.xmalloc.wordnote.util.net.GsonRequest;
 import com.xmalloc.wordnote.util.net.NetUtil;
 import com.xmalloc.wordnote.util.net.VolleyWrapper;
 import com.xmalloc.wordnote.word.vo.ActResp;
-import com.xmalloc.wordnote.word.vo.Record;
-import com.xmalloc.wordnote.word.vo.Schedule;
+import com.xmalloc.wordnote.word.vo.CalculateResult;
 
 /**
  * Created by zhch on 2015/5/18.
@@ -35,7 +33,7 @@ public class WordPlanAct extends BaseAct {
 
     WordLogic logic;
     String content;
-    List<Record> reviewDays;
+    List<String> reviewDays;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +52,7 @@ public class WordPlanAct extends BaseAct {
         String reviewDays = PreferencesUtils.getString(this, WordLogic.REVIEW_DAYS);
         String scheduleString = PreferencesUtils.getString(WordPlanAct.this, logic.SCHEDULE_STRING);
         if(!TextUtils.isEmpty(dateString)){
-            mAct.setText(dateString);
+            setContent(dateString);
         }
         if(!TextUtils.isEmpty(reviewDays)){
             mTodayDays.setText(reviewDays);
@@ -70,7 +68,7 @@ public class WordPlanAct extends BaseAct {
                 getList();
                 break;
             case R.id.calculate:
-                calculate();
+                calculateAndDisplay();
                 break;
             case R.id.next:
                 startActivity(new Intent(this, WordAct.class));
@@ -78,50 +76,71 @@ public class WordPlanAct extends BaseAct {
         }
     }
 
-
+    /**
+     * 从服务器取 DATE_STRING 的值
+     */
     private void getList() {
-
         GsonRequest<ActResp> listRequest = new GsonRequest<ActResp>(WordApi.PLAN_LIST,
                 ActResp.class, null, getListResponseListener(),
                 NetUtil.getErrorListener(this));
         VolleyWrapper.getInstance(this).addToRequestQueue(listRequest);
     }
 
-
+    /**
+     * 取回DATE_STRING的值, 保存并计算 SCHEDULE
+     * @return
+     */
     private Response.Listener<ActResp> getListResponseListener() {
         return new Response.Listener<ActResp>() {
             @Override
             public void onResponse(ActResp res) {
-                content = res.content;
-                mAct.setText(content);
+                setContent(res.content);
                 PreferencesUtils.putString(WordPlanAct.this, logic.DATE_STRING, content);
-                calculate();
+                calculateAndDisplay();
             }
         };
     }
 
+    /**
+     * DATE_STRING 要设置两个地方
+     * @param content
+     */
+    public void setContent(String content){
+        this.content = content;
+        mAct.setText(content);
+    }
+
+    /**
+     * 计算SCHEDULE, 如果界面 today_days 有值就不计算，用已有的值
+     */
+    private void calculateAndDisplay() {
+        calculate();
+        showCalculateResult();
+    }
     private void calculate() {
-        List<Schedule> result = logic.calculateTime(content);
-        String today = TimeUtil.format(new Date(), "yyyy-MM-dd");
+        String oldReviewDays = mTodayDays.getText().toString();
+
+        // 如果界面 today_days 有值就不计算，用已有的值
+        if(!TextUtils.isEmpty(oldReviewDays.trim())){
+            reviewDays = Arrays.asList(oldReviewDays.trim().split("\\s+"));
+            return;
+        }
+
+        boolean showAll = mShowAll.isChecked();
+        CalculateResult result = logic.calculateTime(content, showAll);
 
         // 显示今天要背的
-        for(Schedule s: result){
-            if(today.equals(s.date)){
-                mTodayDays.setText(s.words());
-                PreferencesUtils.putString(this, WordLogic.REVIEW_DAYS, s.words());
-                reviewDays = s.wordDays;
-                break;
-            }
-        }
-        boolean showAll = mShowAll.isChecked();
-        String scheduleString = WordLogic.printSchedule(result, showAll);
+        reviewDays = Arrays.asList(result.reviewDays.trim().split("\\s+"));
+
+        // 显示 schedule
+        String scheduleString = WordLogic.printSchedule(result.scheduleList, showAll);
         mPlan.setText(scheduleString);
         PreferencesUtils.putString(WordPlanAct.this, logic.SCHEDULE_STRING, scheduleString);
     }
-
-    private void setupWords() {
-        for(Record r : reviewDays){
-            String wordJson = PreferencesUtils.getString(this, r.name);
-        }
+    private void showCalculateResult(){
+        // 显示今天要背的
+        String reviewDaysStr = TextUtils.join(" ", reviewDays);
+        mTodayDays.setText(reviewDaysStr);
+        PreferencesUtils.putString(this, WordLogic.REVIEW_DAYS, reviewDaysStr);
     }
 }

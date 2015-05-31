@@ -6,6 +6,7 @@ import java.util.List;
  * Created by zhch on 2015/5/19.
  */
 public class Schedule {
+    /** yyyy-MM-dd 格式日期 */
     public String date;
     public List<Record> wordDays;
 

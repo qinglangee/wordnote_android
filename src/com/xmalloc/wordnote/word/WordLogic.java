@@ -12,6 +12,8 @@ import com.xmalloc.wordnote.util.TimeUtil;
 import com.xmalloc.wordnote.util.net.GsonRequest;
 import com.xmalloc.wordnote.util.net.NetUtil;
 import com.xmalloc.wordnote.util.net.VolleyWrapper;
+import com.xmalloc.wordnote.word.vo.CalculateResult;
+import com.xmalloc.wordnote.word.vo.Pronounce;
 import com.xmalloc.wordnote.word.vo.Record;
 import com.xmalloc.wordnote.word.vo.Schedule;
 import com.xmalloc.wordnote.word.vo.Word;
@@ -35,9 +37,11 @@ import java.util.Set;
 public class WordLogic {
 
     public static final String DATE_STRING = "DATE_STRING";
-    public static final String SCHEDULE_STRING = "DATE_STRING";
+    public static final String SCHEDULE_STRING = "SCHEDULE_STRING";
     public static final String REVIEW_DAYS = "REVIEW_DAYS";
     public static final String REVIEW_WORDS = "REVIEW_WORDS";
+    public static final String RANDOM_WORDS = "RANDOM_WORDS";
+    public static final String FORGET_WORDS = "FORGET_WORDS";
     Context context;
 
     private String reviewDays; // 要背的单词的日子的字符串
@@ -45,11 +49,16 @@ public class WordLogic {
     private int dayCount; // 要背的单词的天数
     private List<Word> reviewWordList; // 要背的单词列表
     private List<Word> reviewRandomList; // 要背的单词随机
-    private Set<Word> forgetSet;
+    public Set<Word> forgetSet;
     private int total; // 当日复习总数量
     private int passedNum;
     public int reviewIndex; // 当前正显示的单词的 index
     private Random random = new Random();
+
+    Type typeWordList = new TypeToken<List<Word>>() {
+    }.getType();
+    Type typeWordSet = new TypeToken<Set<Word>>() {
+    }.getType();
 
     WordLogic(Context context) {
         this.context = context;
@@ -58,7 +67,17 @@ public class WordLogic {
         forgetSet = new HashSet<>();
     }
 
-    public List<Schedule> calculateTime(String content) {
+    /**
+     * 根据 content 计算出每天要复习的列表放map中， 然后调用sortMap排序成List
+     * @param content
+     * @param showAll
+     * @return
+     */
+    public CalculateResult calculateTime(String content, boolean showAll) {
+        // 清空以前的记录
+        PreferencesUtils.putString(context, REVIEW_WORDS, "");
+
+
         List<String> lines = new ArrayList<String>();
         String[] lineStrs = content.split("\\s");
         for (String s : lineStrs) {
@@ -98,7 +117,7 @@ public class WordLogic {
 
         }
 
-        return printResult(map);
+        return sortMap(map, showAll);
     }
 
     /**
@@ -106,9 +125,12 @@ public class WordLogic {
      *
      * @param map
      */
-    private List<Schedule> printResult(Map<String, List<Record>> map) {
+    private CalculateResult sortMap(Map<String, List<Record>> map, boolean showAll) {
         List<String> keys = new ArrayList<String>(map.keySet());
         Collections.sort(keys); // 日期排序
+        CalculateResult result = new CalculateResult();
+
+        String today = TimeUtil.format(new Date(), "yyyy-MM-dd");
 
         // 计算所有的天数, 打印
         Date first = TimeUtil.parseDate(keys.get(0), "yyyy-MM-dd");
@@ -119,11 +141,15 @@ public class WordLogic {
         c.setTime(first);
         c.add(Calendar.DAY_OF_YEAR, -1);
 
-        List<Schedule> result = new ArrayList<>();
+        List<Schedule> scheduleList = new ArrayList<>();
         for (int i = 0; i <= days; i++) {
-            c.add(Calendar.DAY_OF_YEAR, 1);
 
             String key = TimeUtil.format(c.getTime(), "yyyy-MM-dd");
+            c.add(Calendar.DAY_OF_YEAR, 1);
+            if (!showAll && key.compareTo(today) < 0) {
+                continue;
+            }
+
             Schedule schedule = new Schedule();
             schedule.date = key;
 
@@ -133,8 +159,14 @@ public class WordLogic {
                 Collections.sort(records);
                 schedule.wordDays = records;
             }
-            result.add(schedule);
+
+            if (key.equals(today)) {
+                result.reviewDays = schedule.words();
+            }
+            scheduleList.add(schedule);
         }
+
+        result.scheduleList = scheduleList;
         return result;
     }
 
@@ -183,6 +215,9 @@ public class WordLogic {
         for (int i = 0; i < wordSize; i++) {
             reviewWordList.add(reviewRandomList.get(i));
         }
+
+        PreferencesUtils.putString(context, REVIEW_WORDS, GsonUtils.toJson(reviewWordList));
+        PreferencesUtils.putString(context, RANDOM_WORDS, GsonUtils.toJson(reviewRandomList));
     }
 
     private void requestDayWords(String day) {
@@ -226,12 +261,13 @@ public class WordLogic {
 
     public void forget() {
         forgetSet.add(reviewRandomList.get(reviewIndex));
+        PreferencesUtils.putString(context, FORGET_WORDS, GsonUtils.toJson(forgetSet));
         reviewIndexAdd();
     }
 
     public void pass() {
         boolean found = reviewWordList.remove(reviewRandomList.get(reviewIndex));
-        if(found){
+        if (found) {
             passedNum++;
         }
         reviewIndexAdd();
@@ -256,9 +292,13 @@ public class WordLogic {
     }
 
     public void setReviewWordList(String reviewWordsJson) {
-        Type type = new TypeToken<List<Word>>() {
-        }.getType();
-        this.reviewWordList = GsonUtils.fromJson(reviewWordsJson, type);
+        this.reviewWordList = GsonUtils.fromJson(reviewWordsJson, typeWordList);
+    }
+    public void setRandomWordList(String reviewWordsJson) {
+        this.reviewRandomList = GsonUtils.fromJson(reviewWordsJson, typeWordList);
+    }
+    public void setForgetWordList(String reviewWordsJson) {
+        this.forgetSet = GsonUtils.fromJson(reviewWordsJson, typeWordSet);
     }
 
     public String reviewPreInfo() {
@@ -286,7 +326,13 @@ public class WordLogic {
     public String getPreTranslate() {
         Word word = getPre();
         StringBuilder sb = new StringBuilder();
+
         if (word != null) {
+            if(word.pronounce != null){
+                for(Pronounce p : word.pronounce){
+                    sb.append(p.name).append(" ").append(p.text).append("\n");
+                }
+            }
             if (word.translate != null) {
                 for (String s : word.translate) {
                     sb.append(s).append("\n");
