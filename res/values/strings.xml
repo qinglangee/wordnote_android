@@ -21,4 +21,8 @@
     <string name="common_err_connection_broken">遇到网络问题, 请稍后再试</string>
     <string name="common_err_connection_401">用户验证出错, 请重新登录</string>
     <string name="common_err_connection_500">服务器抽风,治疗中...</string>
+
+    <string name="word_review_complete">所有单词复习完了</string>
+    <string name="word_forget_err">忘你妹啊。。。</string>
+
 </resources>

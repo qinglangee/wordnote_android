@@ -123,6 +123,7 @@ public class WordPlanAct extends BaseAct {
         // 如果界面 today_days 有值就不计算，用已有的值
         if(!TextUtils.isEmpty(oldReviewDays.trim())){
             reviewDays = Arrays.asList(oldReviewDays.trim().split("\\s+"));
+            PreferencesUtils.putString(this, WordLogic.REVIEW_WORDS, null);
             return;
         }
 

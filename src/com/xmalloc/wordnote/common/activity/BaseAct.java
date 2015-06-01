@@ -3,6 +3,7 @@ package com.xmalloc.wordnote.common.activity;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.widget.Toast;
 
 import com.xmalloc.wordnote.R;
 
@@ -11,6 +12,7 @@ import com.xmalloc.wordnote.R;
  */
 public class BaseAct extends Activity {
 
+    private Toast toast;
 
     /**
      * 切换 fragment, 并记入back stack
@@ -36,5 +38,28 @@ public class BaseAct extends Activity {
         }
 
         transaction.commit();
+    }
+
+
+    protected void showToast(CharSequence text){
+        if(toast == null){
+            toast = createToast();
+        }
+        toast.setText(text);
+        toast.show();
+    }
+
+    protected void showToast(int textRes){
+        if(toast == null){
+            toast = createToast();
+        }
+        toast.setText(getString(textRes));
+        toast.show();
+    }
+
+    private Toast createToast(){
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(this, "", duration);
+        return toast;
     }
 }

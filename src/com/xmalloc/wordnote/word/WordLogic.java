@@ -5,10 +5,12 @@ import android.content.Context;
 import com.android.volley.Response;
 import com.google.common.base.Strings;
 import com.google.gson.reflect.TypeToken;
+import com.xmalloc.wordnote.R;
 import com.xmalloc.wordnote.constant.WordApi;
 import com.xmalloc.wordnote.util.GsonUtils;
 import com.xmalloc.wordnote.util.PreferencesUtils;
 import com.xmalloc.wordnote.util.TimeUtil;
+import com.xmalloc.wordnote.util.ToastUtil;
 import com.xmalloc.wordnote.util.net.GsonRequest;
 import com.xmalloc.wordnote.util.net.NetUtil;
 import com.xmalloc.wordnote.util.net.VolleyWrapper;
@@ -215,6 +217,7 @@ public class WordLogic {
         for (int i = 0; i < wordSize; i++) {
             reviewWordList.add(reviewRandomList.get(i));
         }
+        reviewIndex = 0;
 
         PreferencesUtils.putString(context, REVIEW_WORDS, GsonUtils.toJson(reviewWordList));
         PreferencesUtils.putString(context, RANDOM_WORDS, GsonUtils.toJson(reviewRandomList));
@@ -260,12 +263,20 @@ public class WordLogic {
     }
 
     public void forget() {
+        if(reviewRandomList.size() == 0){
+            ToastUtil.show(context, R.string.word_forget_err);
+            return;
+        }
         forgetSet.add(reviewRandomList.get(reviewIndex));
         PreferencesUtils.putString(context, FORGET_WORDS, GsonUtils.toJson(forgetSet));
         reviewIndexAdd();
     }
 
     public void pass() {
+        if(reviewRandomList.size() == 0){
+            ToastUtil.show(context, R.string.word_review_complete);
+            return;
+        }
         boolean found = reviewWordList.remove(reviewRandomList.get(reviewIndex));
         if (found) {
             passedNum++;
