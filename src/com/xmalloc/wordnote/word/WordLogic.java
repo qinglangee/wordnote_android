@@ -311,6 +311,9 @@ public class WordLogic {
     public void setForgetWordList(String reviewWordsJson) {
         this.forgetSet = GsonUtils.fromJson(reviewWordsJson, typeWordSet);
     }
+    public void setDayCount(int dayCount){
+        this.dayCount = dayCount;
+    }
 
     public String reviewPreInfo() {
         return "天数：" + dayCount + " 单词数：" + reviewWordList.size();

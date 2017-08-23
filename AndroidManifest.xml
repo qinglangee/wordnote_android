@@ -32,7 +32,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".word.WordPlanAct" />
-        <activity android:name=".word.WordAct" />
+        <activity android:name=".word.WordPlanAct"
+            android:screenOrientation="portrait" />
+        <activity android:name=".word.WordAct"
+            android:screenOrientation="portrait" />
     </application>
 </manifest>
